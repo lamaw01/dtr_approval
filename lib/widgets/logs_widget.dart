@@ -6,8 +6,9 @@ import '../data/selfies_provider.dart';
 import '../model/log_model.dart';
 
 class LogsWidget extends StatefulWidget {
-  const LogsWidget({super.key, required this.logs});
+  const LogsWidget({super.key, required this.logs, required this.index});
   final List<Log> logs;
+  final int index;
 
   @override
   State<LogsWidget> createState() => _LogsWidgetState();
@@ -44,7 +45,58 @@ class _LogsWidgetState extends State<LogsWidget> {
         default:
           return null;
       }
-      // return null;
+    }
+
+    Widget approvalStatus(int status) {
+      switch (status) {
+        case 1:
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Approved',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.green,
+                ),
+              ),
+              Icon(
+                Icons.check,
+                size: 15.0,
+                color: Colors.green,
+              ),
+            ],
+          );
+        case 2:
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Disapproved',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.red,
+                ),
+              ),
+              Icon(
+                Icons.close,
+                size: 15.0,
+                color: Colors.red,
+              ),
+            ],
+          );
+        default:
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'For Approval',
+                style: TextStyle(fontSize: 12.0),
+              ),
+              Icon(Icons.access_time, size: 15.0),
+            ],
+          );
+      }
     }
 
     return Row(
@@ -61,61 +113,14 @@ class _LogsWidgetState extends State<LogsWidget> {
                 selfies.dateFormat12or24Web(widget.logs[j].timeStamp),
                 style: textStyleImage,
               ),
-              if (j == 0 || j == 3) ...[
-                const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'For Approval',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
-                    Icon(Icons.access_time, size: 15.0),
-                  ],
-                ),
-              ] else if (j == 1) ...[
-                const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Approved',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.green,
-                      ),
-                    ),
-                    Icon(
-                      Icons.check,
-                      size: 15.0,
-                      color: Colors.green,
-                    ),
-                  ],
-                ),
-              ] else if (j == 2) ...[
-                const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Disapproved',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.red,
-                      ),
-                    ),
-                    Icon(
-                      Icons.close,
-                      size: 15.0,
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-              ],
+              approvalStatus(widget.logs[j].approvalStatus),
             ],
           ),
           SizedBox(
             height: 20.0,
             width: 20.0,
             child: PopupMenuButton<String>(
-              onSelected: (String value) {
+              onSelected: (String value) async {
                 String latlng = widget.logs[j].latlng.replaceAll(' ', ',');
 
                 if (value == 'Show Image') {
@@ -125,6 +130,22 @@ class _LogsWidgetState extends State<LogsWidget> {
                 } else if (value == 'Show Map') {
                   launchUrl(
                     Uri.parse('$googleMapsUrl$latlng'),
+                  );
+                } else if (value == 'Approve') {
+                  await selfies.insertStatus(
+                    approved: 1,
+                    approvedBy: 'Janrey Dumaog',
+                    logId: widget.logs[j].id,
+                    indexList: widget.index,
+                    indexLog: j,
+                  );
+                } else if (value == 'Disapprove') {
+                  await selfies.insertStatus(
+                    approved: 2,
+                    approvedBy: 'Janrey Dumaog',
+                    logId: widget.logs[j].id,
+                    indexList: widget.index,
+                    indexLog: j,
                   );
                 }
               },

@@ -16,6 +16,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final idController = TextEditingController();
   final fromController =
       TextEditingController(text: DateFormat.yMEd().format(DateTime.now()));
   final toController =
@@ -31,7 +32,7 @@ class _HomeViewState extends State<HomeView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await department.getDepartment();
       await version.getPackageInfo();
-      await selfies.getSelfies(department.dropdownValue);
+      await selfies.getSelfiesAll(department.dropdownValue);
     });
   }
 
@@ -283,6 +284,46 @@ class _HomeViewState extends State<HomeView> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        style: const TextStyle(fontSize: 18.0),
+                                        decoration: const InputDecoration(
+                                          label: Text('ID no. or Name'),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.grey,
+                                              width: 1.0,
+                                            ),
+                                          ),
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.fromLTRB(
+                                              12.0, 12.0, 12.0, 12.0),
+                                        ),
+                                        controller: idController,
+                                        onSubmitted: (data) async {
+                                          selfies.changeLoadingState(true);
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+                                          if (idController.text.isEmpty) {
+                                            // get records all
+                                            await selfies.getSelfiesAll(
+                                                department.dropdownValue);
+                                          } else {
+                                            // get records with id or name
+                                            await selfies.getSelfies(
+                                                idController.text.trim(),
+                                                department.dropdownValue);
+                                          }
+                                          selfies.changeLoadingState(false);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 5.0),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -320,8 +361,8 @@ class _HomeViewState extends State<HomeView> {
                                       await Future.delayed(
                                           const Duration(seconds: 1));
 
-                                      await selfies
-                                          .getSelfies(department.dropdownValue);
+                                      await selfies.getSelfiesAll(
+                                          department.dropdownValue);
 
                                       selfies.changeLoadingState(false);
                                     },
@@ -399,8 +440,8 @@ class _HomeViewState extends State<HomeView> {
                                         .format(selfies.uiList[i].date),
                                     style: const TextStyle(fontSize: 13.0),
                                   )),
-                                  DataCell(
-                                      LogsWidget(logs: selfies.uiList[i].logs)),
+                                  DataCell(LogsWidget(
+                                      logs: selfies.uiList[i].logs, index: i)),
                                 ],
                               ),
                             ],
@@ -629,6 +670,46 @@ class _HomeViewState extends State<HomeView> {
                                     ],
                                   ),
                                 ),
+                                const SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        style: const TextStyle(fontSize: 18.0),
+                                        decoration: const InputDecoration(
+                                          label: Text('ID no. or Name'),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.grey,
+                                              width: 1.0,
+                                            ),
+                                          ),
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.fromLTRB(
+                                              12.0, 12.0, 12.0, 12.0),
+                                        ),
+                                        controller: idController,
+                                        onSubmitted: (data) async {
+                                          selfies.changeLoadingState(true);
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+                                          if (idController.text.isEmpty) {
+                                            // get records all
+                                            await selfies.getSelfiesAll(
+                                                department.dropdownValue);
+                                          } else {
+                                            // get records with id or name
+                                            await selfies.getSelfies(
+                                                idController.text.trim(),
+                                                department.dropdownValue);
+                                          }
+                                          selfies.changeLoadingState(false);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 5.0),
                                 SizedBox(
                                   height: 30.0,
@@ -667,8 +748,8 @@ class _HomeViewState extends State<HomeView> {
                                       selfies.changeLoadingState(true);
                                       await Future.delayed(
                                           const Duration(seconds: 1));
-                                      await selfies
-                                          .getSelfies(department.dropdownValue);
+                                      await selfies.getSelfiesAll(
+                                          department.dropdownValue);
                                       selfies.changeLoadingState(false);
                                     },
                                     child: const Text(
@@ -689,7 +770,7 @@ class _HomeViewState extends State<HomeView> {
                       if (selfies.selfieList.isNotEmpty) ...[
                         for (int i = 0; i < selfies.uiList.length; i++) ...[
                           Container(
-                            height: 100.0,
+                            height: 120.0,
                             color: i % 2 == 0 ? null : Colors.grey[300],
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -762,7 +843,8 @@ class _HomeViewState extends State<HomeView> {
                                 const SizedBox(height: 2.5),
                                 const Divider(height: 5.0),
                                 const SizedBox(height: 2.5),
-                                LogsWidget(logs: selfies.uiList[i].logs)
+                                LogsWidget(
+                                    logs: selfies.uiList[i].logs, index: i)
                               ],
                             ),
                           ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +23,6 @@ class SelfiesProvider with ChangeNotifier {
   DateTime selectedFrom = DateTime.now();
   DateTime selectedTo = DateTime.now();
   final _dateFormat1 = DateFormat('yyyy-MM-dd HH:mm');
-  // final _dateYmd = DateFormat('yyyy-MM-dd');
 
   void changeLoadingState(bool state) {
     _isLoading.value = state;
@@ -35,20 +36,34 @@ class SelfiesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getSelfies(
-    DepartmentModel department,
-  ) async {
+  Future<void> getSelfies(String employeeId, DepartmentModel department) async {
     var newselectedFrom = selectedFrom.copyWith(hour: 0, minute: 0, second: 0);
     var newselectedTo = selectedTo.copyWith(hour: 23, minute: 59, second: 59);
     try {
       var result = await HttpService.getSelfies(
+        employeeId: employeeId,
         dateFrom: _dateFormat1.format(newselectedFrom),
         dateTo: _dateFormat1.format(newselectedTo),
         department: department,
       );
       setData(result);
     } catch (e) {
-      debugPrint('$e getSelfies');
+      log('$e getSelfies');
+    }
+  }
+
+  Future<void> getSelfiesAll(DepartmentModel department) async {
+    var newselectedFrom = selectedFrom.copyWith(hour: 0, minute: 0, second: 0);
+    var newselectedTo = selectedTo.copyWith(hour: 23, minute: 59, second: 59);
+    try {
+      var result = await HttpService.getSelfiesAll(
+        dateFrom: _dateFormat1.format(newselectedFrom),
+        dateTo: _dateFormat1.format(newselectedTo),
+        department: department,
+      );
+      setData(result);
+    } catch (e) {
+      log('$e getSelfies');
     }
   }
 
@@ -72,5 +87,28 @@ class SelfiesProvider with ChangeNotifier {
           _selfieList.getRange(_uiList.length, _uiList.length + 30).toList());
     }
     notifyListeners();
+  }
+
+  Future<void> insertStatus({
+    required int approved,
+    required String approvedBy,
+    required int logId,
+    required int indexList,
+    required int indexLog,
+  }) async {
+    try {
+      var result = await HttpService.insertStatus(
+        approved: approved,
+        approvedBy: approvedBy,
+        logId: logId,
+      );
+      _selfieList[indexList].logs[indexLog] = result;
+      if (_selfieList.length == _uiList.length) {
+        _uiList[indexList].logs[indexLog] = result;
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('$e insertStatus');
+    }
   }
 }
