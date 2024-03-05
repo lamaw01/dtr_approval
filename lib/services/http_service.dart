@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/approval_model.dart';
 import '../model/department_model.dart';
 import '../model/log_model.dart';
 import '../model/selfie_model.dart';
@@ -98,5 +99,32 @@ class HttpService {
         .timeout(const Duration(seconds: 10));
     debugPrint('insertStatus ${response.statusCode} ${response.body}');
     return logFromJson(response.body);
+  }
+
+  static Future<List<ApprovalModel>> getApproved() async {
+    var response = await http.get(
+      Uri.parse('$_serverUrl/get_approved.php'),
+      headers: <String, String>{
+        'Accept': '*/*',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).timeout(const Duration(seconds: 10));
+    debugPrint('getApproved ${response.body}');
+    return approvalModelFromJson(response.body);
+  }
+
+  static Future<List<ApprovalModel>> getApprovedLoadmore(int id) async {
+    var response = await http
+        .post(
+          Uri.parse('$_serverUrl/get_approved_loadmore.php'),
+          headers: <String, String>{
+            'Accept': '*/*',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(<String, dynamic>{'id': id}),
+        )
+        .timeout(const Duration(seconds: 10));
+    debugPrint('getApprovedLoadmore ${response.body}');
+    return approvalModelFromJson(response.body);
   }
 }

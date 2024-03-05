@@ -60,9 +60,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $time_head = $result['time_stamp'];
             $time_tail = $result['time_stamp'];
             // get logs
-            $get_logs_within= $conn->prepare("SELECT case is_selfie when 0 then time_stamp when 1 then selfie_timestamp end time_stamp,
-            log_type, id, image_path, is_selfie, latlng FROM tbl_logs
-            WHERE employee_id = :id AND (case is_selfie when 0 then time_stamp when 1 then selfie_timestamp end) BETWEEN '$time_head 00:00:00' AND '$time_tail 23:59:59' LIMIT 6;");
+            $get_logs_within= $conn->prepare("SELECT selfie_timestamp as time_stamp,
+            log_type, id, image_path, is_selfie, latlng, approval_status FROM tbl_logs
+            WHERE employee_id = :id AND is_selfie = 1 AND selfie_timestamp BETWEEN '$time_head 00:00:00' AND '$time_tail 23:59:59' LIMIT 6;");
             $get_logs_within->bindParam(':id', $id, PDO::PARAM_STR);
             $get_logs_within->execute();
             $result_get_logs_within = $get_logs_within->fetchAll(PDO::FETCH_ASSOC);

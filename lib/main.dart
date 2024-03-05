@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import 'data/approved_provider.dart';
 import 'data/department_provider.dart';
 import 'data/selfies_provider.dart';
 import 'data/version_provider.dart';
-import 'view/home_view.dart';
+import 'view/side_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,9 @@ void main() {
         ),
         ChangeNotifierProvider<VersionProvider>(
           create: (_) => VersionProvider(),
+        ),
+        ChangeNotifierProvider<ApprovedProvider>(
+          create: (_) => ApprovedProvider(),
         ),
       ],
       child: const MyApp(),
@@ -42,7 +46,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
         primarySwatch: Colors.cyan,
       ),
-      home: const HomeView(),
+      home: const SideView(),
     );
   }
 }
