@@ -19,6 +19,8 @@ class ApprovalModel {
   String imagePath;
   String latlng;
   String employeeId;
+  String department;
+  String team;
   String firstName;
   String lastName;
   String middleName;
@@ -32,6 +34,8 @@ class ApprovalModel {
     required this.imagePath,
     required this.latlng,
     required this.employeeId,
+    required this.department,
+    required this.team,
     required this.firstName,
     required this.lastName,
     required this.middleName,
@@ -46,6 +50,8 @@ class ApprovalModel {
         imagePath: json["image_path"],
         latlng: json["latlng"],
         employeeId: json["employee_id"],
+        department: json["department"],
+        team: json["team"],
         firstName: json["first_name"],
         lastName: json["last_name"],
         middleName: json["middle_name"],
@@ -60,6 +66,8 @@ class ApprovalModel {
         "image_path": imagePath,
         "latlng": latlng,
         "employee_id": employeeId,
+        "department": department,
+        "team": team,
         "first_name": firstName,
         "last_name": lastName,
         "middle_name": middleName,

@@ -11,6 +11,14 @@ class DataRowWidget extends StatelessWidget {
   final Color? color;
   final double width;
 
+  Color? fontColorFunc(String text) {
+    if (text == 'IN' || text == 'OUT') {
+      return text == 'IN' ? Colors.green : Colors.red;
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -20,7 +28,7 @@ class DataRowWidget extends StatelessWidget {
         maxLines: 1,
         text,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 13.0),
+        style: TextStyle(fontSize: 13.0, color: fontColorFunc(text)),
       ),
     );
   }

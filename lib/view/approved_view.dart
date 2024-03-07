@@ -14,7 +14,7 @@ class ApprovedView extends StatefulWidget {
 }
 
 class _ApprovedViewState extends State<ApprovedView> {
-  late ScrollController _scrollController;
+  final _scrollController = ScrollController();
 
   static const String imageFolder = 'http://103.62.153.74:53000/field_api/';
 
@@ -23,8 +23,7 @@ class _ApprovedViewState extends State<ApprovedView> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()..addListener(_scrollListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -35,16 +34,18 @@ class _ApprovedViewState extends State<ApprovedView> {
 
   void _scrollListener() async {
     final approved = Provider.of<ApprovedProvider>(context, listen: false);
-    // if (_scrollController.position.extentAfter < 500) {
-    //   setState(() {
-    //     items.addAll(List.generate(42, (index) => 'Inserted $index'));
-    //   });
-    // }
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !approved.loadMore) {
+        _scrollController.position.maxScrollExtent) {
+      approved.changeLoadingState(true);
       await approved.getApprovedLoadmore();
+      approved.changeLoadingState(false);
     }
+    // if (_scrollController.offset >=
+    //     _scrollController.position.maxScrollExtent) {
+    //   approved.changeLoadingState(true);
+    //   await approved.getApprovedLoadmore();
+    //   approved.changeLoadingState(false);
+    // }
   }
 
   @override
@@ -57,7 +58,7 @@ class _ApprovedViewState extends State<ApprovedView> {
           children: [
             Container(
               color: Colors.grey,
-              width: 800.0,
+              width: 1000.0,
               height: 30.0,
               child: const Row(
                 mainAxisSize: MainAxisSize.max,
@@ -79,14 +80,24 @@ class _ApprovedViewState extends State<ApprovedView> {
                     color: Colors.teal,
                   ),
                   DataRowWidget(
-                    text: 'Approved By',
-                    width: 150.0,
-                    color: Colors.purple,
+                    text: 'Department',
+                    width: 100.0,
+                    color: Colors.teal,
+                  ),
+                  DataRowWidget(
+                    text: 'Team',
+                    width: 100.0,
+                    color: Colors.teal,
                   ),
                   DataRowWidget(
                     text: 'Timestamp',
                     width: 150.0,
                     color: Colors.blue,
+                  ),
+                  DataRowWidget(
+                    text: 'Approved By',
+                    width: 150.0,
+                    color: Colors.purple,
                   ),
                   SizedBox(
                     height: 20.0,
@@ -98,13 +109,14 @@ class _ApprovedViewState extends State<ApprovedView> {
             Expanded(
               child: SizedBox(
                 // color: Colors.pink[300],
-                width: 800.0,
+                width: 1000.0,
                 child: ListView.separated(
+                  controller: _scrollController,
                   separatorBuilder: (_, __) => const Divider(),
                   itemCount: approved.approvedList.length,
                   itemBuilder: (_, index) {
                     return SizedBox(
-                      width: 600.0,
+                      width: 1000.0,
                       height: 30.0,
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -127,15 +139,25 @@ class _ApprovedViewState extends State<ApprovedView> {
                             color: Colors.teal,
                           ),
                           DataRowWidget(
-                            text: approved.approvedList[index].approvedBy,
-                            width: 150.0,
-                            color: Colors.purple,
+                            text: approved.approvedList[index].department,
+                            width: 100.0,
+                            color: Colors.teal,
+                          ),
+                          DataRowWidget(
+                            text: approved.approvedList[index].team,
+                            width: 100.0,
+                            color: Colors.teal,
                           ),
                           DataRowWidget(
                             text: DateFormat('yyyy-MM-dd HH:mm')
                                 .format(approved.approvedList[index].timeStamp),
                             width: 150.0,
                             color: Colors.blue,
+                          ),
+                          DataRowWidget(
+                            text: approved.approvedList[index].approvedBy,
+                            width: 150.0,
+                            color: Colors.purple,
                           ),
                           SizedBox(
                             height: 20.0,
@@ -155,16 +177,19 @@ class _ApprovedViewState extends State<ApprovedView> {
                                   launchUrl(
                                     Uri.parse('$googleMapsUrl$latlng'),
                                   );
-                                } else if (value == 'Loadmore') {
-                                  approved.getApprovedLoadmore();
                                 }
+                                // else if (value == 'Loadmore') {
+                                //   approved.changeLoadingState(true);
+                                //   await approved.getApprovedLoadmore();
+                                //   approved.changeLoadingState(false);
+                                // }
                               },
                               iconSize: 20.0,
                               tooltip: 'Menu',
                               splashRadius: 12.0,
                               padding: const EdgeInsets.all(0.0),
                               itemBuilder: (BuildContext context) {
-                                return {'Show Image', 'Show Map', 'Loadmore'}
+                                return {'Show Image', 'Show Map'}
                                     .map((String choice) {
                                   return PopupMenuItem<String>(
                                     value: choice,

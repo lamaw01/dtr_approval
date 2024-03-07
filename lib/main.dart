@@ -5,6 +5,8 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'data/approved_provider.dart';
 import 'data/department_provider.dart';
+import 'data/disapproved_provider.dart';
+import 'data/for_approval_provider.dart';
 import 'data/selfies_provider.dart';
 import 'data/version_provider.dart';
 import 'view/side_view.dart';
@@ -26,6 +28,12 @@ void main() {
         ),
         ChangeNotifierProvider<ApprovedProvider>(
           create: (_) => ApprovedProvider(),
+        ),
+        ChangeNotifierProvider<DisapprovedProvider>(
+          create: (_) => DisapprovedProvider(),
+        ),
+        ChangeNotifierProvider<ForApprovalProvider>(
+          create: (_) => ForApprovalProvider(),
         ),
       ],
       child: const MyApp(),

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../model/approval_model.dart';
 import '../services/http_service.dart';
 
-class ApprovedProvider with ChangeNotifier {
-  var _approvedList = <ApprovalModel>[];
-  List<ApprovalModel> get approvedList => _approvedList;
+class DisapprovedProvider with ChangeNotifier {
+  var _disapprovedList = <ApprovalModel>[];
+  List<ApprovalModel> get disapprovedList => _disapprovedList;
 
   var _loadMore = false;
   bool get loadMore => _loadMore;
@@ -19,25 +19,25 @@ class ApprovedProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getApproved() async {
+  Future<void> getDisapproved() async {
     try {
-      var result = await HttpService.getApproved();
-      _approvedList = result;
+      var result = await HttpService.getDisapproved();
+      _disapprovedList = result;
       notifyListeners();
     } catch (e) {
-      debugPrint('$e getApproved');
+      debugPrint('$e getDisapproved');
     }
   }
 
-  Future<void> getApprovedLoadmore() async {
+  Future<void> getDisapprovedLoadmore() async {
     await Future.delayed(const Duration(seconds: 1));
     try {
-      var result =
-          await HttpService.getApprovedLoadmore(_approvedList.last.logId);
-      _approvedList.addAll(result);
+      var result = await HttpService.getDisapprovedLoadmore(
+          1); //_disapprovedList.last.logId
+      _disapprovedList.addAll(result);
       notifyListeners();
     } catch (e) {
-      debugPrint('$e getApprovedLoadmore');
+      debugPrint('$e getDisapprovedLoadmore');
     }
   }
 }
