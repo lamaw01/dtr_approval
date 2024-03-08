@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
 
     $sql_get_for_approval = "SELECT tbl_logs.id, tbl_logs.employee_id, tbl_employee.first_name, tbl_employee.last_name, tbl_employee.middle_name, tbl_logs.log_type, tbl_logs.latlng, tbl_logs.image_path,department,tbl_logs.team, tbl_logs.selfie_timestamp as time_stamp FROM tbl_logs
     LEFT JOIN tbl_employee ON tbl_logs.employee_id = tbl_employee.employee_id
-    WHERE tbl_logs.is_selfie = 1 AND tbl_logs.approval_status = 0 ORDER BY tbl_logs.id DESC LIMIT 100;";
+    WHERE tbl_logs.is_selfie = 1 AND tbl_logs.approval_status = 0 ORDER BY tbl_logs.id DESC LIMIT 30;";
 
     try {
         $sql1= $conn->prepare($sql_get_for_approval);

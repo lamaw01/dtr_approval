@@ -10,7 +10,7 @@ $input = json_decode($inputJSON, TRUE);
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
 
     $sql_get_approved = "SELECT tbl_approval_logs.id,tbl_approval_logs.log_id,tbl_approval_logs.approved_by,tbl_logs.log_type,tbl_logs.image_path, 
-    tbl_logs.latlng, tbl_employee.employee_id, tbl_employee.first_name,tbl_employee.last_name,tbl_employee.middle_name,tbl_approval_logs.time_stamp 
+    tbl_logs.latlng, tbl_employee.employee_id, tbl_logs.department, tbl_logs.team, tbl_employee.first_name,tbl_employee.last_name,tbl_employee.middle_name,tbl_approval_logs.time_stamp 
     FROM tbl_approval_logs LEFT JOIN tbl_logs ON tbl_logs.id = tbl_approval_logs.log_id 
     LEFT JOIN tbl_employee ON tbl_logs.employee_id = tbl_employee.employee_id 
     WHERE tbl_approval_logs.approved = 1 AND tbl_employee.active = 1 ORDER BY tbl_approval_logs.time_stamp DESC LIMIT 100;";
