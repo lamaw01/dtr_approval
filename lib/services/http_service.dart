@@ -165,7 +165,49 @@ class HttpService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     ).timeout(const Duration(seconds: 10));
-    debugPrint('getForApproval ${response.body}');
+    // debugPrint('getForApproval ${response.body}');
+    return forApprovalModelFromJson(response.body);
+  }
+
+  static Future<void> insertStatusForApproval({
+    required int approved,
+    required String approvedBy,
+    required int logId,
+  }) async {
+    var response = await http
+        .post(
+          Uri.parse('$_serverUrl/insert_status_for_approval.php'),
+          headers: <String, String>{
+            'Accept': '*/*',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(
+            <String, dynamic>{
+              'approved': approved,
+              'approved_by': approvedBy,
+              'log_id': logId,
+              'id': logId,
+            },
+          ),
+        )
+        .timeout(const Duration(seconds: 10));
+    debugPrint(
+        'insertStatusForApproval ${response.statusCode} ${response.body}');
+  }
+
+  static Future<List<ForApprovalModel>> getForApprovalLoadmore(int id) async {
+    var response = await http
+        .post(
+          Uri.parse('$_serverUrl/get_for_approval_loadmore.php'),
+          headers: <String, String>{
+            'Accept': '*/*',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(<String, dynamic>{'id': id}),
+        )
+        .timeout(const Duration(seconds: 10));
+    // debugPrint(
+    //     'getForApprovalLoadmore ${response.body}');
     return forApprovalModelFromJson(response.body);
   }
 }

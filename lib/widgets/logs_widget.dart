@@ -32,20 +32,20 @@ class _LogsWidgetState extends State<LogsWidget> {
 
   static const String googleMapsUrl = 'https://maps.google.com/maps?q=loc:';
 
+  Color? getBackground(String status) {
+    switch (status) {
+      case 'Approve':
+        return Colors.green;
+      case 'Disapprove':
+        return Colors.red;
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var selfies = Provider.of<SelfiesProvider>(context, listen: false);
-
-    Color? getBackground(String status) {
-      switch (status) {
-        case 'Approve':
-          return Colors.green;
-        case 'Disapprove':
-          return Colors.red;
-        default:
-          return null;
-      }
-    }
 
     Widget approvalStatus(int status) {
       switch (status) {

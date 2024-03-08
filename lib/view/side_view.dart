@@ -2,10 +2,7 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/approved_provider.dart';
 import '../data/department_provider.dart';
-import '../data/disapproved_provider.dart';
-import '../data/for_approval_provider.dart';
 import '../data/selfies_provider.dart';
 import '../data/version_provider.dart';
 import 'approved_view.dart';
@@ -35,19 +32,12 @@ class _SideViewState extends State<SideView> {
     final version = Provider.of<VersionProvider>(context, listen: false);
     final department = Provider.of<DepartmentProvider>(context, listen: false);
     final selfies = Provider.of<SelfiesProvider>(context, listen: false);
-    final forapproval =
-        Provider.of<ForApprovalProvider>(context, listen: false);
-    final approved = Provider.of<ApprovedProvider>(context, listen: false);
-    final disapproved =
-        Provider.of<DisapprovedProvider>(context, listen: false);
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await version.getPackageInfo();
       await department.getDepartment();
       await selfies.getSelfiesAll(department.dropdownValue);
-      await forapproval.getForApproval();
-      await approved.getApproved();
-      await disapproved.getDisapproved();
     });
   }
 
@@ -96,7 +86,7 @@ class _SideViewState extends State<SideView> {
       ),
     ];
 
-    const String title = 'UC-1 DTR Selfie Approval';
+    const String title = 'DTR Approval';
     final version = Provider.of<VersionProvider>(context);
 
     return Scaffold(

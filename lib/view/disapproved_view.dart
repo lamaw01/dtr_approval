@@ -24,6 +24,14 @@ class _DisapprovedViewState extends State<DisapprovedView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    final disapproved =
+        Provider.of<DisapprovedProvider>(context, listen: false);
+    _scrollController.addListener(_scrollListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (disapproved.disapprovedList.isEmpty) {
+        await disapproved.getDisapproved();
+      }
+    });
   }
 
   @override
@@ -95,7 +103,7 @@ class _DisapprovedViewState extends State<DisapprovedView> {
                     color: Colors.blue,
                   ),
                   DataRowWidget(
-                    text: 'Approved By',
+                    text: 'Disapproved By',
                     width: 150.0,
                     color: Colors.purple,
                   ),
@@ -110,102 +118,110 @@ class _DisapprovedViewState extends State<DisapprovedView> {
               child: SizedBox(
                 // color: Colors.pink[300],
                 width: 1000.0,
-                child: ListView.separated(
-                  controller: _scrollController,
-                  separatorBuilder: (_, __) => const Divider(),
-                  itemCount: disapproved.disapprovedList.length,
-                  itemBuilder: (_, index) {
-                    return SizedBox(
-                      width: 1000.0,
-                      height: 30.0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          DataRowWidget(
-                            text: disapproved.disapprovedList[index].employeeId,
-                            width: 50.0,
-                            color: Colors.amber,
-                          ),
-                          DataRowWidget(
-                            text: disapproved
-                                .fullName(disapproved.disapprovedList[index]),
-                            width: 200.0,
-                            color: Colors.pink,
-                          ),
-                          DataRowWidget(
-                            text: disapproved.disapprovedList[index].logType,
-                            width: 80.0,
-                            color: Colors.teal,
-                          ),
-                          DataRowWidget(
-                            text: disapproved.disapprovedList[index].department,
-                            width: 100.0,
-                            color: Colors.teal,
-                          ),
-                          DataRowWidget(
-                            text: disapproved.disapprovedList[index].team,
-                            width: 100.0,
-                            color: Colors.teal,
-                          ),
-                          DataRowWidget(
-                            text: DateFormat('yyyy-MM-dd HH:mm').format(
-                                disapproved.disapprovedList[index].timeStamp),
-                            width: 150.0,
-                            color: Colors.blue,
-                          ),
-                          DataRowWidget(
-                            text: disapproved.disapprovedList[index].approvedBy,
-                            width: 150.0,
-                            color: Colors.purple,
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                            width: 20.0,
-                            child: PopupMenuButton<String>(
-                              onSelected: (String value) async {
-                                String latlng = disapproved
-                                    .disapprovedList[index].latlng
-                                    .replaceAll(' ', ',');
-
-                                if (value == 'Show Image') {
-                                  launchUrl(
-                                    Uri.parse(
-                                        '$imageFolder${disapproved.disapprovedList[index].imagePath}'),
-                                  );
-                                } else if (value == 'Show Map') {
-                                  launchUrl(
-                                    Uri.parse('$googleMapsUrl$latlng'),
-                                  );
-                                }
-                                // else if (value == 'Loadmore') {
-                                //   disapproved.changeLoadingState(true);
-                                //   await disapproved.getDisapprovedLoadmore();
-                                //   disapproved.changeLoadingState(false);
-                                // }
-                              },
-                              iconSize: 20.0,
-                              tooltip: 'Menu',
-                              splashRadius: 12.0,
-                              padding: const EdgeInsets.all(0.0),
-                              itemBuilder: (BuildContext context) {
-                                return {'Show Image', 'Show Map'}
-                                    .map((String choice) {
-                                  return PopupMenuItem<String>(
-                                    value: choice,
-                                    child: Text(
-                                      choice,
-                                      style: const TextStyle(fontSize: 13.0),
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await disapproved.getDisapproved();
                   },
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    separatorBuilder: (_, __) => const Divider(),
+                    itemCount: disapproved.disapprovedList.length,
+                    itemBuilder: (_, index) {
+                      return SizedBox(
+                        width: 1000.0,
+                        height: 30.0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            DataRowWidget(
+                              text:
+                                  disapproved.disapprovedList[index].employeeId,
+                              width: 50.0,
+                              color: Colors.amber,
+                            ),
+                            DataRowWidget(
+                              text: disapproved
+                                  .fullName(disapproved.disapprovedList[index]),
+                              width: 200.0,
+                              color: Colors.pink,
+                            ),
+                            DataRowWidget(
+                              text: disapproved.disapprovedList[index].logType,
+                              width: 80.0,
+                              color: Colors.teal,
+                            ),
+                            DataRowWidget(
+                              text:
+                                  disapproved.disapprovedList[index].department,
+                              width: 100.0,
+                              color: Colors.teal,
+                            ),
+                            DataRowWidget(
+                              text: disapproved.disapprovedList[index].team,
+                              width: 100.0,
+                              color: Colors.teal,
+                            ),
+                            DataRowWidget(
+                              text: DateFormat('yyyy-MM-dd HH:mm').format(
+                                  disapproved.disapprovedList[index].timeStamp),
+                              width: 150.0,
+                              color: Colors.blue,
+                            ),
+                            DataRowWidget(
+                              text:
+                                  disapproved.disapprovedList[index].approvedBy,
+                              width: 150.0,
+                              color: Colors.purple,
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                              width: 20.0,
+                              child: PopupMenuButton<String>(
+                                onSelected: (String value) async {
+                                  String latlng = disapproved
+                                      .disapprovedList[index].latlng
+                                      .replaceAll(' ', ',');
+
+                                  if (value == 'Show Image') {
+                                    launchUrl(
+                                      Uri.parse(
+                                          '$imageFolder${disapproved.disapprovedList[index].imagePath}'),
+                                    );
+                                  } else if (value == 'Show Map') {
+                                    launchUrl(
+                                      Uri.parse('$googleMapsUrl$latlng'),
+                                    );
+                                  }
+                                  // else if (value == 'Loadmore') {
+                                  //   disapproved.changeLoadingState(true);
+                                  //   await disapproved.getDisapprovedLoadmore();
+                                  //   disapproved.changeLoadingState(false);
+                                  // }
+                                },
+                                iconSize: 20.0,
+                                tooltip: 'Menu',
+                                splashRadius: 12.0,
+                                padding: const EdgeInsets.all(0.0),
+                                itemBuilder: (BuildContext context) {
+                                  return {'Show Image', 'Show Map'}
+                                      .map((String choice) {
+                                    return PopupMenuItem<String>(
+                                      value: choice,
+                                      child: Text(
+                                        choice,
+                                        style: const TextStyle(fontSize: 13.0),
+                                      ),
+                                    );
+                                  }).toList();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

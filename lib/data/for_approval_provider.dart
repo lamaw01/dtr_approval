@@ -23,8 +23,36 @@ class ForApprovalProvider with ChangeNotifier {
     try {
       var result = await HttpService.getForApproval();
       _forapprovalList = result;
+      notifyListeners();
     } catch (e) {
       debugPrint('$e getForApproval');
+    }
+  }
+
+  Future<void> getForApprovalLoadmore() async {
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      var result =
+          await HttpService.getForApprovalLoadmore(_forapprovalList.last.id);
+      _forapprovalList.addAll(result);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('$e getDisapprovedLoadmore');
+    }
+  }
+
+  Future<void> insertStatusForApproval({
+    required int approved,
+    required String approvedBy,
+    required int logId,
+  }) async {
+    try {
+      await HttpService.insertStatusForApproval(
+          approved: approved, approvedBy: approvedBy, logId: logId);
+    } catch (e) {
+      debugPrint('$e insertStatusForApproval');
+    } finally {
+      await getForApproval();
     }
   }
 }

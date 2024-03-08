@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'data/approved_provider.dart';
+import 'data/approvers_provider.dart';
 import 'data/department_provider.dart';
 import 'data/disapproved_provider.dart';
 import 'data/for_approval_provider.dart';
 import 'data/selfies_provider.dart';
 import 'data/version_provider.dart';
-import 'view/side_view.dart';
+import 'view/login_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,9 @@ void main() {
         ChangeNotifierProvider<ForApprovalProvider>(
           create: (_) => ForApprovalProvider(),
         ),
+        ChangeNotifierProvider<ApproversProvider>(
+          create: (_) => ApproversProvider(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -54,7 +58,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
         primarySwatch: Colors.cyan,
       ),
-      home: const SideView(),
+      home: const LoginView(),
     );
   }
 }
