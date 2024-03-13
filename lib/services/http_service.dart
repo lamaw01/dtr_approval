@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/approval_model.dart';
+import '../model/approver_model.dart';
 import '../model/department_model.dart';
 import '../model/for_approval_model.dart';
 import '../model/log_model.dart';
@@ -209,5 +210,28 @@ class HttpService {
     // debugPrint(
     //     'getForApprovalLoadmore ${response.body}');
     return forApprovalModelFromJson(response.body);
+  }
+
+  static Future<ApproverModel> login({
+    required String emloyeeId,
+    required String password,
+  }) async {
+    var response = await http
+        .post(
+          Uri.parse('$_serverUrl/login.php'),
+          headers: <String, String>{
+            'Accept': '*/*',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(
+            <String, dynamic>{
+              'employee_id': emloyeeId,
+              'password': password,
+            },
+          ),
+        )
+        .timeout(const Duration(seconds: 10));
+    // debugPrint('login ${response.body}');
+    return approverModelFromJson(response.body);
   }
 }

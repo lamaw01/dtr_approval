@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_build_context_synchronously, unused_import
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../data/approver_provider.dart';
 import 'side_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -11,24 +15,36 @@ class LoginView extends StatelessWidget {
     var usr = TextEditingController();
     var pwd = TextEditingController();
 
-    bool authenticate(TextEditingController usr, TextEditingController pwd) {
-      bool success = false;
+    Future<void> authenticate(
+      TextEditingController usr,
+      TextEditingController pwd,
+    ) async {
+      final approvers = Provider.of<ApproversProvider>(context, listen: false);
 
-      if (usr.text.trim() == 'admin' && pwd.text.trim() == 'admin@dtr') {
-        success = true;
+      final result =
+          await approvers.login(emloyeeId: usr.text.trim(), password: pwd.text);
+
+      if (result == Auth.success) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const SideView()),
         );
+      } else if (result == Auth.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error username or password'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else if (result == Auth.failed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login failed'),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
-
-      return success;
     }
-
-    const snackBar = SnackBar(
-      content: Text('Login failed'),
-      duration: Duration(seconds: 3),
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -70,11 +86,8 @@ class LoginView extends StatelessWidget {
                   ),
                   contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                 ),
-                onSubmitted: (value) {
-                  bool auth = authenticate(usr, pwd);
-                  if (!auth) {
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
+                onSubmitted: (value) async {
+                  await authenticate(usr, pwd);
                 },
               ),
               const SizedBox(height: 10.0),
@@ -83,11 +96,8 @@ class LoginView extends StatelessWidget {
                 height: 40.0,
                 width: 300.0,
                 child: TextButton(
-                  onPressed: () {
-                    bool auth = authenticate(usr, pwd);
-                    if (!auth) {
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
+                  onPressed: () async {
+                    await authenticate(usr, pwd);
                   },
                   child: const Text(
                     'Login',

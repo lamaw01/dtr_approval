@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:dtr_approval/view/login_view.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/department_provider.dart';
 import '../data/selfies_provider.dart';
@@ -103,6 +107,24 @@ class _SideViewState extends State<SideView> {
             ),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              bool logout = await prefs.remove('login_info');
+              if (logout) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginView()),
+                );
+              }
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
