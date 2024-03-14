@@ -1,10 +1,10 @@
-// ignore_for_file: use_build_context_synchronously, unused_import
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/approver_provider.dart';
-import 'side_view.dart';
+import 'home_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -27,7 +27,7 @@ class LoginView extends StatelessWidget {
       if (result == Auth.success) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SideView()),
+          MaterialPageRoute(builder: (context) => const HomeView()),
         );
       } else if (result == Auth.error) {
         ScaffoldMessenger.of(context).showSnackBar(

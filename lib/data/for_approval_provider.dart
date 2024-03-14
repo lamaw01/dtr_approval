@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/for_approval_model.dart';
 import '../services/http_service.dart';
+import '../services/stream_shared.dart';
 
 class ForApprovalProvider with ChangeNotifier {
   var _forapprovalList = <ForApprovalModel>[];
@@ -43,12 +44,13 @@ class ForApprovalProvider with ChangeNotifier {
 
   Future<void> insertStatusForApproval({
     required int approved,
-    required String approvedBy,
     required int logId,
   }) async {
     try {
+      final String approver = await SharedPreference().approverName();
+
       await HttpService.insertStatusForApproval(
-          approved: approved, approvedBy: approvedBy, logId: logId);
+          approved: approved, approvedBy: approver, logId: logId);
     } catch (e) {
       debugPrint('$e insertStatusForApproval');
     } finally {

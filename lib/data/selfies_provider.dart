@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../model/department_model.dart';
 import '../model/selfie_model.dart';
 import '../services/http_service.dart';
+import '../services/stream_shared.dart';
 
 final _is24HourFormat = ValueNotifier(false);
 ValueNotifier<bool> get is24HourFormat => _is24HourFormat;
@@ -91,15 +92,16 @@ class SelfiesProvider with ChangeNotifier {
 
   Future<void> insertStatus({
     required int approved,
-    required String approvedBy,
     required int logId,
     required int indexList,
     required int indexLog,
   }) async {
     try {
+      final String approver = await SharedPreference().approverName();
+
       var result = await HttpService.insertStatus(
         approved: approved,
-        approvedBy: approvedBy,
+        approvedBy: approver,
         logId: logId,
       );
       _selfieList[indexList].logs[indexLog] = result;

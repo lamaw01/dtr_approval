@@ -1,9 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'data/approved_provider.dart';
@@ -13,10 +10,11 @@ import 'data/disapproved_provider.dart';
 import 'data/for_approval_provider.dart';
 import 'data/selfies_provider.dart';
 import 'data/version_provider.dart';
+import 'services/stream_shared.dart';
+import 'view/home_view.dart';
 import 'view/login_view.dart';
-import 'view/side_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
   runApp(
@@ -88,37 +86,26 @@ class _AuthWrapperState extends State<AuthWrapper> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final prefs = await SharedPreferences.getInstance();
-      String? loginInfo = prefs.getString('login_info');
-      if (loginInfo == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginView()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SideView()),
-        );
-      }
+      SharedPreference().getLoginData().then((data) {
+        if (data != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeView()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginView()),
+          );
+        }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Loading..'),
-      ),
-      // body: const Center(
-      //   child: CircularProgressIndicator(),
-      // ),
-      body: StreamBuilder(
-        stream: Stream.value('ok'),
-        builder: (context, snapshot) {
-          return const SideView();
-        },
-      ),
+    return const Center(
+      child: CircularProgressIndicator(),
     );
   }
 }

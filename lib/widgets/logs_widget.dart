@@ -134,7 +134,6 @@ class _LogsWidgetState extends State<LogsWidget> {
                 } else if (value == 'Approve') {
                   await selfies.insertStatus(
                     approved: 1,
-                    approvedBy: 'Janrey Dumaog',
                     logId: widget.logs[j].id,
                     indexList: widget.index,
                     indexLog: j,
@@ -142,7 +141,6 @@ class _LogsWidgetState extends State<LogsWidget> {
                 } else if (value == 'Disapprove') {
                   await selfies.insertStatus(
                     approved: 2,
-                    approvedBy: 'Janrey Dumaog',
                     logId: widget.logs[j].id,
                     indexList: widget.index,
                     indexLog: j,
