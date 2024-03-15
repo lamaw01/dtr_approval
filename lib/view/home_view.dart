@@ -127,7 +127,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    const String title = 'DTR Approval';
+    const String title = 'DTR Selfie Approval';
     final department = Provider.of<DepartmentProvider>(context);
     final version = Provider.of<VersionProvider>(context);
 

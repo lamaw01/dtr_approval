@@ -80,185 +80,347 @@ class _ForApprovalViewState extends State<ForApprovalView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  color: Colors.grey,
-                  width: 1000.0,
-                  height: 30.0,
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      DataRowWidget(
-                        text: 'Emp Id',
-                        width: 50.0,
-                        color: Colors.amber,
-                      ),
-                      DataRowWidget(
-                        text: 'Name',
-                        width: 200.0,
-                        color: Colors.pink,
-                      ),
-                      DataRowWidget(
-                        text: 'Log Type',
-                        width: 75.0,
-                        color: Colors.teal,
-                      ),
-                      DataRowWidget(
-                        text: 'Department',
-                        width: 100.0,
-                        color: Colors.teal,
-                      ),
-                      DataRowWidget(
-                        text: 'Team',
-                        width: 100.0,
-                        color: Colors.teal,
-                      ),
-                      DataRowWidget(
-                        text: 'Timestamp',
-                        width: 150.0,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                        width: 20.0,
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    // color: Colors.pink[300],
+                if (MediaQuery.of(context).size.width > 600) ...[
+                  Container(
+                    color: Colors.grey,
                     width: 1000.0,
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await forapproval.getForApproval();
-                      },
-                      child: ListView.separated(
-                        controller: _scrollController,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemCount: forapproval.forapprovalList.length,
-                        itemBuilder: (_, index) {
-                          return SizedBox(
-                            width: 1000.0,
-                            height: 30.0,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                DataRowWidget(
-                                  text: forapproval
-                                      .forapprovalList[index].employeeId,
-                                  width: 50.0,
-                                  color: Colors.amber,
-                                ),
-                                DataRowWidget(
-                                  text: forapproval.fullName(
-                                      forapproval.forapprovalList[index]),
-                                  width: 200.0,
-                                  color: Colors.pink,
-                                ),
-                                DataRowWidget(
-                                  text: forapproval
-                                      .forapprovalList[index].logType,
-                                  width: 75.0,
-                                  color: Colors.teal,
-                                ),
-                                DataRowWidget(
-                                  text: forapproval
-                                      .forapprovalList[index].department,
-                                  width: 100.0,
-                                  color: Colors.teal,
-                                ),
-                                DataRowWidget(
-                                  text: forapproval.forapprovalList[index].team,
-                                  width: 100.0,
-                                  color: Colors.teal,
-                                ),
-                                DataRowWidget(
-                                  text: DateFormat('yyyy-MM-dd HH:mm').format(
-                                      forapproval
-                                          .forapprovalList[index].timeStamp),
-                                  width: 150.0,
-                                  color: Colors.blue,
-                                ),
-                                SizedBox(
-                                  height: 20.0,
-                                  width: 20.0,
-                                  child: PopupMenuButton<String>(
-                                    onSelected: (String value) async {
-                                      String latlng = forapproval
-                                          .forapprovalList[index].latlng
-                                          .replaceAll(' ', ',');
-
-                                      if (value == 'Show Image') {
-                                        launchUrl(
-                                          Uri.parse(
-                                              '$imageFolder${forapproval.forapprovalList[index].imagePath}'),
-                                        );
-                                      } else if (value == 'Show Map') {
-                                        launchUrl(
-                                          Uri.parse('$googleMapsUrl$latlng'),
-                                        );
-                                      } else if (value == 'Approve') {
-                                        await forapproval
-                                            .insertStatusForApproval(
-                                          approved: 1,
-                                          logId: forapproval
-                                              .forapprovalList[index].id,
-                                        );
-                                      } else if (value == 'Disapprove') {
-                                        await forapproval
-                                            .insertStatusForApproval(
-                                          approved: 2,
-                                          logId: forapproval
-                                              .forapprovalList[index].id,
-                                        );
-                                      }
-                                      // else if (value == 'Loadmore') {
-                                      //   forapproval.changeLoadingState(true);
-                                      //   await forapproval.getforapprovalLoadmore();
-                                      //   forapproval.changeLoadingState(false);
-                                      // }
-                                    },
-                                    iconSize: 20.0,
-                                    tooltip: 'Menu',
-                                    splashRadius: 12.0,
-                                    padding: const EdgeInsets.all(0.0),
-                                    itemBuilder: (BuildContext context) {
-                                      return {
-                                        'Show Image',
-                                        'Show Map',
-                                        'Approve',
-                                        'Disapprove'
-                                      }.map((String choice) {
-                                        return PopupMenuItem<String>(
-                                          value: choice,
-                                          child: Text(
-                                            choice,
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: getBackground(choice),
-                                            ),
-                                          ),
-                                        );
-                                      }).toList();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                    height: 40.0,
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        DataRowWidget(
+                          text: 'Emp Id',
+                          width: 50.0,
+                          color: Colors.amber,
+                        ),
+                        DataRowWidget(
+                          text: 'Name',
+                          width: 200.0,
+                          color: Colors.pink,
+                        ),
+                        DataRowWidget(
+                          text: 'Log Type',
+                          width: 75.0,
+                          color: Colors.teal,
+                        ),
+                        DataRowWidget(
+                          text: 'Department',
+                          width: 100.0,
+                          color: Colors.teal,
+                        ),
+                        DataRowWidget(
+                          text: 'Team',
+                          width: 100.0,
+                          color: Colors.teal,
+                        ),
+                        DataRowWidget(
+                          text: 'Timestamp',
+                          width: 150.0,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                          width: 20.0,
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      // color: Colors.pink[300],
+                      width: 1000.0,
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await forapproval.getForApproval();
                         },
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: forapproval.forapprovalList.length,
+                          itemBuilder: (_, index) {
+                            return Container(
+                              width: 1000.0,
+                              height: 40.0,
+                              color: index % 2 == 0 ? null : Colors.grey[300],
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  DataRowWidget(
+                                    text: forapproval
+                                        .forapprovalList[index].employeeId,
+                                    width: 50.0,
+                                    color: Colors.amber,
+                                  ),
+                                  DataRowWidget(
+                                    text: forapproval.fullName(
+                                        forapproval.forapprovalList[index]),
+                                    width: 200.0,
+                                    color: Colors.pink,
+                                  ),
+                                  DataRowWidget(
+                                    text: forapproval
+                                        .forapprovalList[index].logType,
+                                    width: 75.0,
+                                    color: Colors.teal,
+                                  ),
+                                  DataRowWidget(
+                                    text: forapproval
+                                        .forapprovalList[index].department,
+                                    width: 100.0,
+                                    color: Colors.teal,
+                                  ),
+                                  DataRowWidget(
+                                    text:
+                                        forapproval.forapprovalList[index].team,
+                                    width: 100.0,
+                                    color: Colors.teal,
+                                  ),
+                                  DataRowWidget(
+                                    text: DateFormat('yyyy-MM-dd HH:mm').format(
+                                        forapproval
+                                            .forapprovalList[index].timeStamp),
+                                    width: 150.0,
+                                    color: Colors.blue,
+                                  ),
+                                  SizedBox(
+                                    height: 20.0,
+                                    width: 20.0,
+                                    child: PopupMenuButton<String>(
+                                      onSelected: (String value) async {
+                                        String latlng = forapproval
+                                            .forapprovalList[index].latlng
+                                            .replaceAll(' ', ',');
+
+                                        if (value == 'Show Image') {
+                                          launchUrl(
+                                            Uri.parse(
+                                                '$imageFolder${forapproval.forapprovalList[index].imagePath}'),
+                                          );
+                                        } else if (value == 'Show Map') {
+                                          launchUrl(
+                                            Uri.parse('$googleMapsUrl$latlng'),
+                                          );
+                                        } else if (value == 'Approve') {
+                                          await forapproval
+                                              .insertStatusForApproval(
+                                            approved: 1,
+                                            logId: forapproval
+                                                .forapprovalList[index].id,
+                                          );
+                                        } else if (value == 'Disapprove') {
+                                          await forapproval
+                                              .insertStatusForApproval(
+                                            approved: 2,
+                                            logId: forapproval
+                                                .forapprovalList[index].id,
+                                          );
+                                        }
+                                        // else if (value == 'Loadmore') {
+                                        //   forapproval.changeLoadingState(true);
+                                        //   await forapproval.getforapprovalLoadmore();
+                                        //   forapproval.changeLoadingState(false);
+                                        // }
+                                      },
+                                      iconSize: 20.0,
+                                      tooltip: 'Menu',
+                                      splashRadius: 12.0,
+                                      padding: const EdgeInsets.all(0.0),
+                                      itemBuilder: (BuildContext context) {
+                                        return {
+                                          'Show Image',
+                                          'Show Map',
+                                          'Approve',
+                                          'Disapprove'
+                                        }.map((String choice) {
+                                          return PopupMenuItem<String>(
+                                            value: choice,
+                                            child: Text(
+                                              choice,
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                color: getBackground(choice),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (forapproval.loadMore) ...[
-                  const SizedBox(
-                    height: 30.0,
-                    width: 30.0,
-                    child: CircularProgressIndicator(),
+                  if (forapproval.loadMore) ...[
+                    const SizedBox(
+                      height: 30.0,
+                      width: 30.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ],
+                ] else ...[
+                  Expanded(
+                    child: SizedBox(
+                      // color: Colors.pink[300],
+                      width: 500.0,
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await forapproval.getForApproval();
+                        },
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: forapproval.forapprovalList.length,
+                          itemBuilder: (_, index) {
+                            return Container(
+                              width: 450.0,
+                              height: 40.0,
+                              color: index % 2 == 0 ? null : Colors.grey[300],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      DataRowWidget(
+                                        text: forapproval
+                                            .forapprovalList[index].employeeId,
+                                        width: 80.0,
+                                        color: Colors.amber,
+                                      ),
+                                      DataRowWidget(
+                                        text: forapproval.fullName(
+                                            forapproval.forapprovalList[index]),
+                                        width: 200.0,
+                                        color: Colors.pink,
+                                      ),
+                                      DataRowWidget(
+                                        text: forapproval
+                                            .forapprovalList[index].logType,
+                                        width: 150.0,
+                                        color: Colors.teal,
+                                      ),
+                                      const SizedBox(
+                                        height: 20.0,
+                                        width: 20.0,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      DataRowWidget(
+                                        text: forapproval
+                                            .forapprovalList[index].department,
+                                        width: 80.0,
+                                        color: Colors.teal,
+                                      ),
+                                      DataRowWidget(
+                                        text: forapproval
+                                            .forapprovalList[index].team,
+                                        width: 200.0,
+                                        color: Colors.teal,
+                                      ),
+                                      DataRowWidget(
+                                        text: DateFormat('yyyy-MM-dd HH:mm')
+                                            .format(forapproval
+                                                .forapprovalList[index]
+                                                .timeStamp),
+                                        width: 150.0,
+                                        color: Colors.blue,
+                                      ),
+                                      SizedBox(
+                                        height: 20.0,
+                                        width: 20.0,
+                                        child: PopupMenuButton<String>(
+                                          onSelected: (String value) async {
+                                            String latlng = forapproval
+                                                .forapprovalList[index].latlng
+                                                .replaceAll(' ', ',');
+
+                                            if (value == 'Show Image') {
+                                              launchUrl(
+                                                Uri.parse(
+                                                    '$imageFolder${forapproval.forapprovalList[index].imagePath}'),
+                                              );
+                                            } else if (value == 'Show Map') {
+                                              launchUrl(
+                                                Uri.parse(
+                                                    '$googleMapsUrl$latlng'),
+                                              );
+                                            } else if (value == 'Approve') {
+                                              await forapproval
+                                                  .insertStatusForApproval(
+                                                approved: 1,
+                                                logId: forapproval
+                                                    .forapprovalList[index].id,
+                                              );
+                                            } else if (value == 'Disapprove') {
+                                              await forapproval
+                                                  .insertStatusForApproval(
+                                                approved: 2,
+                                                logId: forapproval
+                                                    .forapprovalList[index].id,
+                                              );
+                                            }
+                                            // else if (value == 'Loadmore') {
+                                            //   forapproval.changeLoadingState(true);
+                                            //   await forapproval.getforapprovalLoadmore();
+                                            //   forapproval.changeLoadingState(false);
+                                            // }
+                                          },
+                                          iconSize: 20.0,
+                                          tooltip: 'Menu',
+                                          splashRadius: 12.0,
+                                          padding: const EdgeInsets.all(0.0),
+                                          itemBuilder: (BuildContext context) {
+                                            return {
+                                              'Show Image',
+                                              'Show Map',
+                                              'Approve',
+                                              'Disapprove'
+                                            }.map((String choice) {
+                                              return PopupMenuItem<String>(
+                                                value: choice,
+                                                child: Text(
+                                                  choice,
+                                                  style: TextStyle(
+                                                    fontSize: 13.0,
+                                                    color:
+                                                        getBackground(choice),
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
+                  if (forapproval.loadMore) ...[
+                    const SizedBox(
+                      height: 30.0,
+                      width: 30.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ],
                 ],
               ],
             ),

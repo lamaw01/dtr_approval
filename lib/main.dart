@@ -14,7 +14,7 @@ import 'services/stream_shared.dart';
 import 'view/home_view.dart';
 import 'view/login_view.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
   runApp(
@@ -60,7 +60,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
         primarySwatch: Colors.cyan,
       ),
-      // home: const LoginView(),
       home: const AuthWrapper(),
     );
   }

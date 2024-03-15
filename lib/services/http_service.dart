@@ -99,7 +99,7 @@ class HttpService {
           ),
         )
         .timeout(const Duration(seconds: 10));
-    // debugPrint('insertStatus ${response.statusCode} ${response.body}');
+    debugPrint('insertStatus ${response.statusCode} ${response.body}');
     return logFromJson(response.body);
   }
 

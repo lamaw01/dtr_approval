@@ -15,13 +15,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && array_key_exists('employee_id', $inpu
     LEFT JOIN tbl_employee ON tbl_approvers.employee_id = tbl_employee.employee_id
     WHERE tbl_approvers.employee_id = :employee_id AND BINARY tbl_approvers.password = :password";
     //md5()
+
+    $hash_md5 = md5($password);
+
     try {
         $sql1= $conn->prepare($sql_login);
         $sql1->bindParam(':employee_id', $employee_id, PDO::PARAM_STR);
-        $sql1->bindParam(':password', $password, PDO::PARAM_STR);
+        $sql1->bindParam(':password', $hash_md5, PDO::PARAM_STR);
         $sql1->execute();
         $result_sql1 = $sql1->fetch(PDO::FETCH_ASSOC);
         echo json_encode($result_sql1);
+        // echo json_encode(array('hash_md5'=>$hash_md5,'password'=>$password));
     } catch (PDOException $e) {
         echo json_encode(array('success'=>false,'message'=>$e->getMessage()));
     } finally{
